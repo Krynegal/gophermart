@@ -2,32 +2,22 @@ package service
 
 import (
 	"context"
-	"github.com/Krynegal/gophermart.git/internal/models"
 	"github.com/Krynegal/gophermart.git/internal/storage"
+	"github.com/Krynegal/gophermart.git/internal/user"
 )
 
-type Auth interface {
-	CreateUser(ctx context.Context, user *models.User) error
-	AuthenticationUser(ctx context.Context, user *models.User) error
-	GenerateToken(user *models.User) (string, error)
-}
-
-type AccrualOrder interface {
-}
-
-type WithdrawOrder interface {
+type Servicer interface {
+	CreateUser(ctx context.Context, user *user.User) error
+	AuthenticationUser(ctx context.Context, user *user.User) error
+	GenerateToken(user *user.User) (string, error)
 }
 
 type Service struct {
-	Auth     Auth
-	Accrual  AccrualOrder
-	Withdraw WithdrawOrder
+	storage storage.Storager
 }
 
-func NewService(repo *storage.Repository) *Service {
+func NewService(storage storage.Storager) *Service {
 	return &Service{
-		Auth:     NewAuthService(repo.Auth),
-		Accrual:  nil,
-		Withdraw: nil,
+		storage: storage,
 	}
 }

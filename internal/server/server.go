@@ -9,11 +9,11 @@ type Server struct {
 	HTTPServer *http.Server
 }
 
-func NewServer(cfg *configs.Config, handler http.Handler) *Server {
+func NewServer(cfg *configs.Config, router http.Handler) *Server {
 	return &Server{
 		HTTPServer: &http.Server{
 			Addr:    cfg.RunAddr,
-			Handler: handler,
+			Handler: router,
 		},
 	}
 }

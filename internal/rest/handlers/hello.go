@@ -2,6 +2,6 @@ package handlers
 
 import "net/http"
 
-func (h *Handler) Hello(w http.ResponseWriter, r *http.Request) {
+func (r *Router) Hello(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("HELLO"))
 }

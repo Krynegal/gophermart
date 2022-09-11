@@ -3,14 +3,15 @@ package postgres
 import (
 	"database/sql"
 	"github.com/Krynegal/gophermart.git/internal/configs"
+	"github.com/Krynegal/gophermart.git/internal/storage"
 	_ "github.com/lib/pq"
 )
 
 type DB struct {
-	DB *sql.DB
+	db *sql.DB
 }
 
-func NewDatabase(config *configs.Config) (*DB, error) {
+func NewDatabase(config *configs.Config) (storage.Storager, error) {
 	db, err := sql.Open("postgres", config.DatabaseURI)
 	if err != nil {
 		return nil, err
@@ -27,6 +28,6 @@ func NewDatabase(config *configs.Config) (*DB, error) {
 		}
 	}
 	return &DB{
-		DB: db,
+		db: db,
 	}, nil
 }

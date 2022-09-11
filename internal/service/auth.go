@@ -4,30 +4,15 @@ import (
 	"context"
 	"crypto/sha1"
 	"fmt"
-	"github.com/Krynegal/gophermart.git/internal/models"
+	"github.com/Krynegal/gophermart.git/internal/user"
 	"github.com/dgrijalva/jwt-go"
 )
 
 const secretKey = "be55d1079e6c6167118ac91318fe"
 
-type AuthRepo interface {
-	CreateUser(ctx context.Context, user *models.User) (int, error)
-	GetUserID(ctx context.Context, user *models.User) (int, error)
-}
-
-type AuthService struct {
-	repo AuthRepo
-}
-
-func NewAuthService(repo AuthRepo) *AuthService {
-	return &AuthService{
-		repo: repo,
-	}
-}
-
-func (auth *AuthService) CreateUser(ctx context.Context, user *models.User) error {
-	user.Password = auth.generatePasswordHash(user.Password)
-	userID, err := auth.repo.CreateUser(ctx, user)
+func (s *Service) CreateUser(ctx context.Context, user *user.User) error {
+	user.Password = s.generatePasswordHash(user.Password)
+	userID, err := s.storage.CreateUser(ctx, user)
 	if err != nil {
 		return err
 	}
@@ -35,9 +20,9 @@ func (auth *AuthService) CreateUser(ctx context.Context, user *models.User) erro
 	return nil
 }
 
-func (auth *AuthService) AuthenticationUser(ctx context.Context, user *models.User) error {
-	user.Password = auth.generatePasswordHash(user.Password)
-	userID, err := auth.repo.GetUserID(ctx, user)
+func (s *Service) AuthenticationUser(ctx context.Context, user *user.User) error {
+	user.Password = s.generatePasswordHash(user.Password)
+	userID, err := s.storage.GetUserID(ctx, user)
 	if err != nil {
 		return err
 	}
@@ -45,7 +30,7 @@ func (auth *AuthService) AuthenticationUser(ctx context.Context, user *models.Us
 	return nil
 }
 
-func (auth *AuthService) GenerateToken(user *models.User) (string, error) {
+func (s *Service) GenerateToken(user *user.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 	})
@@ -53,7 +38,7 @@ func (auth *AuthService) GenerateToken(user *models.User) (string, error) {
 	return tokenString, err
 }
 
-func (auth *AuthService) generatePasswordHash(password string) string {
+func (s *Service) generatePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))
 	return fmt.Sprintf("%x", hash.Sum([]byte(secretKey)))

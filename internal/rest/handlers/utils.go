@@ -2,15 +2,15 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/Krynegal/gophermart.git/internal/models"
+	"github.com/Krynegal/gophermart.git/internal/user"
 	"io"
 	"net/http"
 )
 
-func (h *Handler) readingUserData(w http.ResponseWriter, r *http.Request, user *models.User) error {
-	defer r.Body.Close()
+func (r *Router) readingUserData(w http.ResponseWriter, req *http.Request, user *user.User) error {
+	defer req.Body.Close()
 
-	body, err := io.ReadAll(r.Body)
+	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return err
@@ -29,8 +29,8 @@ func (h *Handler) readingUserData(w http.ResponseWriter, r *http.Request, user *
 	return nil
 }
 
-func (h *Handler) writeToken(w http.ResponseWriter, user *models.User) {
-	token, err := h.Service.Auth.GenerateToken(user)
+func (r *Router) writeToken(w http.ResponseWriter, user *user.User) {
+	token, err := r.Service.GenerateToken(user)
 	if err != nil {
 		http.Error(w, "Can't get token", http.StatusInternalServerError)
 		return

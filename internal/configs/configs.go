@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"flag"
 	"github.com/caarlos0/env/v6"
 	"log"
 )
@@ -20,4 +21,11 @@ func NewConfigs() *Config {
 	}
 	log.Printf("configs: %v", *cfg)
 	return cfg
+}
+
+func (c *Config) ParseFlags() {
+	flag.StringVar(&c.RunAddr, "a", c.RunAddr, "Run server address")
+	flag.StringVar(&c.DatabaseURI, "d", c.DatabaseURI, "Database URI")
+	flag.StringVar(&c.AccrualSysAddr, "r", c.AccrualSysAddr, "Accrual system address")
+	flag.Parse()
 }
