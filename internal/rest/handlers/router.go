@@ -9,10 +9,10 @@ import (
 
 type Router struct {
 	*mux.Router
-	Service *service.Service
+	Service service.Servicer
 }
 
-func NewRouter(service *service.Service) *Router {
+func NewRouter(service service.Servicer) *Router {
 	router := &Router{
 		Router:  mux.NewRouter(),
 		Service: service,
@@ -25,5 +25,10 @@ func (r *Router) InitRoutes() {
 	r.Router.HandleFunc("/api/user/register", r.registration).Methods(http.MethodPost)
 	r.Router.HandleFunc("/api/user/login", r.authentication).Methods(http.MethodPost)
 
-	r.Router.Handle("/api/user/hello", middlewares.AuthMiddleware(r.Hello))
+	r.Router.Handle("/api/user/orders", middlewares.AuthMiddleware(r.loadOrders)).Methods(http.MethodPost)
+	r.Router.Handle("/api/user/orders", middlewares.AuthMiddleware(r.getUploadedOrders)).Methods(http.MethodGet)
+
+	r.Router.Handle("/api/user/balance", middlewares.AuthMiddleware(r.getCurrentBalance)).Methods(http.MethodGet)
+	r.Router.Handle("/api/user/balance/withdraw", middlewares.AuthMiddleware(r.deductionOfPoints)).Methods(http.MethodPost)
+	r.Router.Handle("/api/user/withdrawals", middlewares.AuthMiddleware(r.getWithdrawalOfPoints)).Methods(http.MethodGet)
 }

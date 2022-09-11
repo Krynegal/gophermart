@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
+	"strconv"
 )
 
 func AuthMiddleware(next http.HandlerFunc) http.Handler {
@@ -30,6 +31,7 @@ func AuthMiddleware(next http.HandlerFunc) http.Handler {
 		userID := int(claims.(jwt.MapClaims)["user_id"].(float64))
 		fmt.Printf("userID: %v of type %T\n", userID, userID)
 
+		w.Header().Set("user_id", strconv.Itoa(userID))
 		next.ServeHTTP(w, r)
 	})
 }

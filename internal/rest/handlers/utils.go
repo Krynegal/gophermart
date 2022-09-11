@@ -5,6 +5,7 @@ import (
 	"github.com/Krynegal/gophermart.git/internal/user"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 func (r *Router) readingUserData(w http.ResponseWriter, req *http.Request, user *user.User) error {
@@ -40,4 +41,22 @@ func (r *Router) writeToken(w http.ResponseWriter, user *user.User) {
 		Name:  "token",
 		Value: token,
 	})
+}
+
+func (r *Router) getUserIDFromToken(w http.ResponseWriter, req *http.Request) (int, error) {
+	//_, claims, err := jwtauth.FromContext(req.Context())
+	//if err != nil {
+	//	http.Error(w, "internalServerError", http.StatusInternalServerError)
+	//	return 0, err
+	//}
+
+	ID := w.Header().Get("user_id")
+	//userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	userID, err := strconv.Atoi(ID)
+	if err != nil {
+		http.Error(w, "can't get user ID", http.StatusInternalServerError)
+		return 0, err
+	}
+
+	return userID, nil
 }

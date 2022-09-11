@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Krynegal/gophermart.git/internal/client"
 	"github.com/Krynegal/gophermart.git/internal/configs"
 	"github.com/Krynegal/gophermart.git/internal/rest/handlers"
 	"github.com/Krynegal/gophermart.git/internal/server"
@@ -18,6 +19,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Can't crate the storage: ", err)
 	}
+
+	cl := client.NewAccrualProcessor(storage, cfg.AccrualSysAddr, 10)
+	cl.Run()
 
 	svc := service.NewService(storage)
 	router := handlers.NewRouter(svc)

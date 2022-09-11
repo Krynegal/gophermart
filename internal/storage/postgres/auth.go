@@ -7,8 +7,8 @@ import (
 	"github.com/Krynegal/gophermart.git/internal/user"
 )
 
-func (pd *DB) CreateUser(ctx context.Context, user *user.User) (int, error) {
-	stmt, err := pd.db.PrepareContext(ctx, "INSERT INTO users(login,password) VALUES ($1,$2) RETURNING id")
+func (db *DB) CreateUser(ctx context.Context, user *user.User) (int, error) {
+	stmt, err := db.db.PrepareContext(ctx, "INSERT INTO users(login,password) VALUES ($1,$2) RETURNING id")
 	if err != nil {
 		return 0, err
 	}
@@ -23,9 +23,9 @@ func (pd *DB) CreateUser(ctx context.Context, user *user.User) (int, error) {
 	return userID, nil
 }
 
-func (pd *DB) GetUserID(ctx context.Context, user *user.User) (int, error) {
+func (db *DB) GetUserID(ctx context.Context, user *user.User) (int, error) {
 	//fmt.Printf("User login: %v, password: %v\n", user.Login, user.Password)
-	row := pd.db.QueryRowContext(ctx, "SELECT id FROM users WHERE login=$1 AND password=$2", user.Login, user.Password)
+	row := db.db.QueryRowContext(ctx, "SELECT id FROM users WHERE login=$1 AND password=$2", user.Login, user.Password)
 	var ID sql.NullInt64
 	_ = row.Scan(&ID)
 	if !ID.Valid {

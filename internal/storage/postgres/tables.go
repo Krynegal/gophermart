@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS orders
 `
 
 	AccrualsTable = `
-CREATE TABLE IF NOT EXISTS orders
+CREATE TABLE IF NOT EXISTS accruals
 (
 	order_num BIGINT PRIMARY KEY,
 	user_id INT NOT NULL,
