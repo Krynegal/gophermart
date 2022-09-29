@@ -19,7 +19,7 @@ func (logErr ErrLogin) Error() string {
 var ErrAuth = errors.New("invalid Login or Password")
 
 type Storager interface {
-	CreateUser(ctx context.Context, user *user.User) (int, error)
+	CreateUser(ctx context.Context, login, password string) (int, error)
 	GetUserID(ctx context.Context, user *user.User) (int, error)
 
 	SaveOrder(ctx context.Context, order *order.AccrualOrder) error

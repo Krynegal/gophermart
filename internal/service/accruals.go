@@ -37,20 +37,13 @@ func (s *Service) LoadOrder(ctx context.Context, numOrder uint64, userID int) er
 	}
 
 	userIDinDB := s.storage.GetUserIDByNumberOrder(ctx, ord.Number)
-	if userIDinDB != 0 {
-		if userIDinDB == ord.UserID {
-			return OrderAlreadyUploadedCurrentUserError{}
-		} else {
-			return OrderAlreadyUploadedAnotherUserError{}
-		}
+	if userIDinDB == 0 {
+		return s.storage.SaveOrder(ctx, &ord)
 	}
-
-	err := s.storage.SaveOrder(ctx, &ord)
-	if err != nil {
-		return err
+	if userIDinDB == ord.UserID {
+		return OrderAlreadyUploadedCurrentUserError{}
 	}
-
-	return nil
+	return OrderAlreadyUploadedAnotherUserError{}
 }
 
 func (s *Service) CheckLuhn(number uint64) bool {

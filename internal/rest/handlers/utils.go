@@ -30,8 +30,8 @@ func (r *Router) readingUserData(w http.ResponseWriter, req *http.Request, user 
 	return nil
 }
 
-func (r *Router) writeToken(w http.ResponseWriter, user *user.User) {
-	token, err := r.Service.GenerateToken(user)
+func (r *Router) writeToken(w http.ResponseWriter, uid int) {
+	token, err := r.Service.GenerateToken(uid)
 	if err != nil {
 		http.Error(w, "Can't get token", http.StatusInternalServerError)
 		return
@@ -44,14 +44,7 @@ func (r *Router) writeToken(w http.ResponseWriter, user *user.User) {
 }
 
 func (r *Router) getUserIDFromToken(w http.ResponseWriter, req *http.Request) (int, error) {
-	//_, claims, err := jwtauth.FromContext(req.Context())
-	//if err != nil {
-	//	http.Error(w, "internalServerError", http.StatusInternalServerError)
-	//	return 0, err
-	//}
-
 	ID := w.Header().Get("user_id")
-	//userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	userID, err := strconv.Atoi(ID)
 	if err != nil {
 		http.Error(w, "can't get user ID", http.StatusInternalServerError)

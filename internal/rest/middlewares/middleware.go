@@ -16,7 +16,6 @@ func AuthMiddleware(next http.HandlerFunc) http.Handler {
 			return
 		}
 		tokenString := c.Value
-		//fmt.Printf("tokenString: %s\n", tokenString)
 		if len(tokenString) == 0 {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Missing Authorization Header"))

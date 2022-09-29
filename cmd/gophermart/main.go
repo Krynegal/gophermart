@@ -21,9 +21,9 @@ func main() {
 	}
 
 	cl := client.NewAccrualProcessor(storage, cfg.AccrualSysAddr, 10)
-	cl.Run()
+	go cl.Run()
 
-	svc := service.NewService(storage)
+	svc := service.NewService(storage, cfg)
 	router := handlers.NewRouter(svc)
 
 	srv := server.NewServer(cfg, router)

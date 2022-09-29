@@ -23,7 +23,8 @@ func (r *Router) getCurrentBalance(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	accruals, withdraws := r.Service.GetBalance(ctx, userID)
 
 	b := balance{Current: accruals - withdraws, Withdrawn: withdraws}
@@ -60,7 +61,8 @@ func (r *Router) deductionOfPoints(w http.ResponseWriter, req *http.Request) {
 
 	order.UserID = userID
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	err = r.Service.DeductionOfPoints(ctx, order)
 
 	switch err.(type) {
@@ -83,7 +85,8 @@ func (r *Router) getWithdrawalOfPoints(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	orders, err := r.Service.GetWithdrawalOfPoints(ctx, userID)
 	if err != nil {
 		http.Error(w, "internalServerError", http.StatusInternalServerError)

@@ -33,7 +33,8 @@ func (r *Router) loadOrders(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	err = r.Service.LoadOrder(ctx, numOrder, userID)
 
 	switch err.(type) {
@@ -61,7 +62,8 @@ func (r *Router) getUploadedOrders(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	orders, err := r.Service.GetUploadedOrders(ctx, userID)
 	if err != nil {
 		http.Error(w, "can't get uploaded orders", http.StatusInternalServerError)

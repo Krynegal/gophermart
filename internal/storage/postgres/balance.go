@@ -66,12 +66,12 @@ func (db *DB) GetWithdrawalOfPoints(ctx context.Context, userID int) ([]order.Wi
 
 	var orders []order.WithdrawOrder
 	for rows.Next() {
-		var order order.WithdrawOrder
-		err = rows.Scan(&order.Order, &order.Sum, &order.ProcessedAt)
+		var ord order.WithdrawOrder
+		err = rows.Scan(&ord.Order, &ord.Sum, &ord.ProcessedAt)
 		if err != nil {
 			return nil, err
 		}
-		orders = append(orders, order)
+		orders = append(orders, ord)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
